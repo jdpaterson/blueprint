@@ -66,7 +66,6 @@ $progress-bar-gradient: linear-gradient(
     position: absolute;
     border-radius: $progress-bar-border-radius;
     background: $progress-bar-gradient;
-    background-color: $progress-head-color;
     background-size: $progress-bar-stripes-size $progress-bar-stripes-size;
     // initial state is a full bar, a la "indeterminate"
     width: 100%;
@@ -92,7 +91,7 @@ $progress-bar-gradient: linear-gradient(
 }
 
 @each $intent, $color in $pt-intent-colors {
-  .#{$ns}-progress-bar.#{$ns}-intent-#{$intent} .#{$ns}-progress-meter {
-    background-color: $color;
-  }
+  // .#{$ns}-progress-bar.#{$ns}-intent-#{$intent} .#{$ns}-progress-meter {
+  //   background-color: $color;
+  // }
 }

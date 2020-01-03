@@ -40,6 +40,11 @@ export interface IProgressBarProps extends IProps, IIntentProps {
      * Omitting this prop will result in an "indeterminate" progress meter that fills the entire bar.
      */
     value?: number;
+    progressLimits?: {
+        start: number;
+        end: number;
+        color: string;
+    };
 }
 
 @polyfill
@@ -56,11 +61,20 @@ export class ProgressBar extends AbstractPureComponent2<IProgressBarProps, {}> {
         );
         // don't set width if value is null (rely on default CSS value)
         const width = value == null ? null : 100 * clamp(value, 0, 1) + "%";
-
+        // ["#1F4B99", "#6B9FA1", "#FFE39F", "#D78742", "#9E2B0E"]
         return (
-            <div className={classes}>
+            <div
+                className={classes}
+                style={{ background: "linear-gradient(90deg, #1F4B99 25%, #6B9FA1 50%, #FFE39F 75%, #9E2B0E 100%)" }}
+            >
                 <div className={Classes.PROGRESS_METER} style={{ width }} />
             </div>
         );
     }
 }
+
+/* TODO:
+    Set the background of the containing div to have a linear-gradient - done
+    Remove the internal div's background colors - done
+    Set the last value of the linear-gradient to be default color, starts from the value prop
+*/
