@@ -21,6 +21,10 @@ import { AbstractPureComponent2, Classes } from "../../common";
 import { DISPLAYNAME_PREFIX, IIntentProps, IProps } from "../../common/props";
 import { clamp } from "../../common/utils";
 
+interface IProgressLimit {
+    color: string;
+    end: number;
+}
 export interface IProgressBarProps extends IProps, IIntentProps {
     /**
      * Whether the background should animate.
@@ -40,11 +44,8 @@ export interface IProgressBarProps extends IProps, IIntentProps {
      * Omitting this prop will result in an "indeterminate" progress meter that fills the entire bar.
      */
     value?: number;
-    progressLimits?: {
-        start: number;
-        end: number;
-        color: string;
-    };
+
+    progressLimits?: IProgressLimit[];
 }
 
 @polyfill
@@ -61,12 +62,22 @@ export class ProgressBar extends AbstractPureComponent2<IProgressBarProps, {}> {
         );
         // don't set width if value is null (rely on default CSS value)
         const width = value == null ? null : 100 * clamp(value, 0, 1) + "%";
-        // ["#1F4B99", "#6B9FA1", "#FFE39F", "#D78742", "#9E2B0E"]
+
+        const gradientMap = () => {
+            return this.props.progressLimits.map((pl: IProgressLimit): string => {
+                return `${pl.color} ${pl.end}%`;
+            });
+        };
+        const calcGradient = (): React.CSSProperties => {
+            if (!intent && this.props.progressLimits) {
+                return { background: `linear-gradient(90deg, ${gradientMap().join(", ")})` };
+            } else {
+                return {};
+            }
+        };
+
         return (
-            <div
-                className={classes}
-                style={{ background: "linear-gradient(90deg, #1F4B99 25%, #6B9FA1 50%, #FFE39F 75%, #9E2B0E 100%)" }}
-            >
+            <div className={classes} style={{ ...calcGradient() }}>
                 <div className={Classes.PROGRESS_METER} style={{ width }} />
             </div>
         );
