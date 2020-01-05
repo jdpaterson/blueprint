@@ -58,9 +58,20 @@ export class ProgressExample extends React.PureComponent<IExampleProps, IProgres
             </>
         );
 
+        const testProgressLimits = [
+            { color: "#1F4B99", start: 0, end: 25 },
+            { color: "#6B9FA1", start: 25, end: 50 },
+            { color: "#FFE39F", start: 50, end: 75 },
+            { color: "#D78742", start: 75, end: 100 }
+        ];
+
         return (
             <Example options={options} {...this.props}>
-                <ProgressBar intent={intent} value={hasValue ? value : null} />
+                <ProgressBar
+                    intent={intent}
+                    value={hasValue ? value : null}
+                    progressLimits={testProgressLimits}
+                />
             </Example>
         );
     }

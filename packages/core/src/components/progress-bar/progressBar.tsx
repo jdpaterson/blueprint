@@ -20,9 +20,11 @@ import { polyfill } from "react-lifecycles-compat";
 import { AbstractPureComponent2, Classes } from "../../common";
 import { DISPLAYNAME_PREFIX, IIntentProps, IProps } from "../../common/props";
 import { clamp } from "../../common/utils";
+import { calcGradient } from "./progressBarUtils";
 
-interface IProgressLimit {
+export interface IProgressLimit {
     color: string;
+    start: number;
     end: number;
 }
 export interface IProgressBarProps extends IProps, IIntentProps {
@@ -53,7 +55,14 @@ export class ProgressBar extends AbstractPureComponent2<IProgressBarProps, {}> {
     public static displayName = `${DISPLAYNAME_PREFIX}.ProgressBar`;
 
     public render() {
-        const { animate = true, className, intent, stripes = true, value } = this.props;
+        const { animate = true, className, intent, progressLimits, stripes = true, value } = this.props;
+        // const testValue = 80;
+        // const testProgressLimits = [
+        //     { color: "#1F4B99", start: 0, end: 25 },
+        //     { color: "#6B9FA1", start: 25, end: 50 },
+        //     { color: "#FFE39F", start: 50, end: 75 },
+        //     { color: "#D78742", start: 75, end: 100 }
+        // ];
         const classes = classNames(
             Classes.PROGRESS_BAR,
             Classes.intentClass(intent),
@@ -62,30 +71,12 @@ export class ProgressBar extends AbstractPureComponent2<IProgressBarProps, {}> {
         );
         // don't set width if value is null (rely on default CSS value)
         const width = value == null ? null : 100 * clamp(value, 0, 1) + "%";
-
-        const gradientMap = () => {
-            return this.props.progressLimits.map((pl: IProgressLimit): string => {
-                return `${pl.color} ${pl.end}%`;
-            });
-        };
-        const calcGradient = (): React.CSSProperties => {
-            if (!intent && this.props.progressLimits) {
-                return { background: `linear-gradient(90deg, ${gradientMap().join(", ")})` };
-            } else {
-                return {};
-            }
-        };
+        const style = progressLimits ? { ...calcGradient(value, progressLimits) } : {};
 
         return (
-            <div className={classes} style={{ ...calcGradient() }}>
+            <div className={classes} style={style}>
                 <div className={Classes.PROGRESS_METER} style={{ width }} />
             </div>
         );
     }
 }
-
-/* TODO:
-    Set the background of the containing div to have a linear-gradient - done
-    Remove the internal div's background colors - done
-    Set the last value of the linear-gradient to be default color, starts from the value prop
-*/

@@ -17,10 +17,10 @@
 import { assert } from "chai";
 import { mount } from "enzyme";
 import * as React from "react";
-
 import { Classes, ProgressBar } from "../../src/index";
+import { calcGradient, gradientMap } from "../../src/components/progress-bar/progressBarUtils";
 
-describe("ProgressBar", () => {
+describe.only("ProgressBar", () => {
     it("renders a PROGRESS_BAR", () => {
         assert.lengthOf(mount(<ProgressBar />).find("." + Classes.PROGRESS_BAR), 1);
     });
@@ -33,5 +33,19 @@ describe("ProgressBar", () => {
     it("value sets width percentage", () => {
         const root = mount(<ProgressBar value={0.35} />);
         assert.strictEqual(root.find("." + Classes.PROGRESS_METER).prop("style").width, "35%");
+    });
+
+    it.only("test the multi-intent function", () => {
+        const value = 80;
+        const progressLimits = [
+            { color: "#1F4B99", start: 0, end: 25 },
+            { color: "#6B9FA1", start: 25, end: 50 },
+            { color: "#FFE39F", start: 50, end: 75 },
+            { color: "#D78742", start: 75, end: 100 },
+        ];
+        const map = gradientMap(value, progressLimits);
+        const gradient = calcGradient(value, progressLimits);
+        console.log(map);
+        console.log(gradient);
     });
 });
